@@ -2,11 +2,11 @@ import iziToast from "izitoast";
 import "izitoast/dist/css/iziToast.min.css";
 
 import { getImagesByQuery } from "./js/pixabay-api";
-import { createGallery, clearGallery, showLoader, hideLoader } from "./js/render-functions";
+import { createGallery, clearGallery, showLoader, hideLoader, showLoadMoreButton, hideLoadMoreButton } from "./js/render-functions";
 
 const form = document.querySelector(".form")
 
-form.addEventListener("submit", event =>{
+form.addEventListener("submit", async event =>{
     event.preventDefault()
 
     const query = event.target.elements["search-text"].value.trim()
@@ -23,8 +23,9 @@ form.addEventListener("submit", event =>{
     showLoader()
     clearGallery()
 
-    getImagesByQuery(query)
-    .then(data => {
+    try{
+        const data = await  getImagesByQuery(query)
+
         if(data.hits.length === 0){
             iziToast.error({
                 title: "No results",
@@ -34,15 +35,16 @@ form.addEventListener("submit", event =>{
             return
         }
         createGallery(data.hits)
-    }).catch((error) =>{
+
+    }catch(error){
         iziToast.error({
             title:"Error",
             message:"Something went wrong. Please try again later!",
             position: "topRight"
         })
-        console.log(error);
-    }).finally(()=>{
+        console.log(error)
+    }finally{
         hideLoader()
-    })
+    }
 }
 )

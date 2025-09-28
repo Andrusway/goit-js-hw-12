@@ -45,3 +45,6 @@ export function hideLoader() {
 if(loader) loader.classList.add("hidden")
 
 }
+
+export function showLoadMoreButton() {}
+export function hideLoadMoreButton() {}
