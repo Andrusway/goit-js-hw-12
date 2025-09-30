@@ -6,6 +6,7 @@ import { createGallery, clearGallery, showLoader, hideLoader, showLoadMoreButton
 
 const form = document.querySelector(".form")
 const loadMoreBtn = document.querySelector(".load-more-btn")
+const searchBtn = document.querySelector(".search-btn")
 
 let page = 1
 let currentQuery = ""
@@ -16,6 +17,8 @@ loadMoreBtn.classList.add("hidden")
 form.addEventListener("submit", async event =>{
     event.preventDefault()
 
+    searchBtn.disabled = true 
+
     const query = event.target.elements["search-text"].value.trim()
 
     if(!query){
@@ -24,6 +27,7 @@ form.addEventListener("submit", async event =>{
             message: "Please enter a search term!",
             position: "topRight"
         })
+        searchBtn.disabled = false
         return
     }
 
@@ -68,17 +72,30 @@ form.addEventListener("submit", async event =>{
         console.log(error)
     }finally{
         hideLoader()
+        searchBtn.disabled = false
     }
 }
 )
 
+
+
 loadMoreBtn.addEventListener("click", async () => {
+    loadMoreBtn.disabled = true
+
     page += 1
     showLoader()
 
     try{
         const data = await  getImagesByQuery(currentQuery, page)
         createGallery(data.hits)
+
+        const { height: cartHeight} = document.querySelector(".gallery")
+        .firstElementChild.getBoundingClientRect()
+
+        window.scrollBy({
+            top: cartHeight * 2,
+            behavior: "smooth"
+        })
 
         const loadedHits = page * 15
         if(loadedHits >= totalHits){
@@ -95,5 +112,7 @@ loadMoreBtn.addEventListener("click", async () => {
         console.log(error)
     }finally{
         hideLoader()
+        loadMoreBtn.disabled = false
     }
 })
+
