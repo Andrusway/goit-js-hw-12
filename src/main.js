@@ -12,7 +12,7 @@ let page = 1
 let currentQuery = ""
 let totalHits = 0
 
-loadMoreBtn.classList.add("hidden")
+hideLoadMoreButton()
 
 form.addEventListener("submit", async event =>{
     event.preventDefault()
@@ -52,9 +52,9 @@ form.addEventListener("submit", async event =>{
         }
         createGallery(data.hits)
         if (totalHits > 15) {
-           loadMoreBtn.classList.remove("hidden");
+           showLoadMoreButton()
         } else {
-        loadMoreBtn.classList.add("hidden");
+        hideLoadMoreButton()
         iziToast.info({
         title: "Info",
         message: "We're sorry, but you've reached the end of search results.",
@@ -99,7 +99,7 @@ loadMoreBtn.addEventListener("click", async () => {
 
         const loadedHits = page * 15
         if(loadedHits >= totalHits){
-            loadMoreBtn.classList.add("hidden")
+            hideLoadMoreButton()
             iziToast.info({
                 title: "Info",
                 message: "We're sorry, but you've reached the end of search results.",
